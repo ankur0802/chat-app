@@ -1,8 +1,9 @@
 import { createContext, useContext, useState } from "react";
 
-const ChatContext = createContext();
+const ChatContext = createContext(null);
 
 const ChatProvider = ({Children})=>{
+
     const [user, setUser]= useState()
 
     return <ChatContext.Provider value={{user, setUser}} >

@@ -1,26 +1,30 @@
-import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, VStack } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+  VStack,
+} from "@chakra-ui/react";
+import React, { useState } from "react";
 
 const Signup = () => {
+  const [show, setShow] = useState(false);
+  const handleClick = () => setShow(!show);
 
-    const [show, setShow] = useState(false);
-    const handleClick = () => setShow(!show);
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [confirmpassword, setConfirmpassword] = useState();
+  const [password, setPassword] = useState();
+  const [pic, setPic] = useState();
+  const [picPreview, setPicPreview] = useState();
+  const [picLoading, setPicLoading] = useState(false);
 
-
-    const [name, setName] = useState();
-    const [email, setEmail] = useState();
-    const [confirmpassword, setConfirmpassword] = useState();
-    const [password, setPassword] = useState();
-    const [pic, setPic] = useState();
-    const [picPreview, setPicPreview] = useState();
-    const [picLoading, setPicLoading] = useState(false);
-
-
-    const postDetails = ()=>{}
-    const submitHandler = ()=>{}
+  const postDetails = () => {};
+  const submitHandler = () => {};
 
   return (
-   
     <VStack spacing="5px">
       <FormControl id="first-name" isRequired>
         <FormLabel>Name</FormLabel>
@@ -69,7 +73,7 @@ const Signup = () => {
       </FormControl>
       <FormControl id="pic">
         <FormLabel>Upload your Picture</FormLabel>
-        <img src={picPreview} alt="Pic Preview" />
+
         <Input
           type="file"
           p={1.5}
@@ -87,8 +91,7 @@ const Signup = () => {
         Sign Up
       </Button>
     </VStack>
+  );
+};
 
-  )
-}
-
-export default Signup
+export default Signup;
