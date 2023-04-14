@@ -11,6 +11,4 @@ router.route('/groupadd').put(isAuthenticatedUser, addToGroup)
 router.route('/groupremove').put(isAuthenticatedUser, removeFromGroup)
 
 
-
-
 module.exports = router;

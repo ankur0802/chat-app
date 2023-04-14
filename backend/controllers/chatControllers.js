@@ -9,7 +9,7 @@ exports.accessChat = catchAsyncErrors(async(req, res, next)=>{
     const {userId} = req.body;
     if(!userId){
         
-        return res.send(400).json({
+        return res.sendStatus(400).json({
             message:'userId params not sent eith request'
         });
     }
@@ -80,22 +80,23 @@ exports.createGroupChat = catchAsyncErrors(async(req, res, next)=>{
     if(!req.body.users || !req.body.name){
         return next(new Errorhandler('Please fill all the fields', 400))
     }
-
-    let users = JSON.parse(req.body.users);
-
+    
+    // let users = JSON.parse(req.body.users);
+    let users = req.body.users
+   
     users.push(req.user)
 
     if(users.length < 2){
         return next( new Errorhandler('more than 2 users are required to form a group chat', 400))
     }
-
+   
      const groupChat = await Chat.create({
         chatName: req.body.name,
         users: users,
         isGroupChat: true,
         groupAdmin: req.user,
      })
-
+     
      const fullGroupChat = await Chat.findOne({ _id: groupChat._id })
        .populate('users', '-password')
        .populate('groupAdmin', '-password')

@@ -3,7 +3,6 @@ const Errorhandler = require('../utils/errorhandler')
 const sendToken = require('../utils/jwtToken')
 const User = require('../models/userModel')
 const crypto = require('crypto')
-const cloudinary = require('cloudinary')
 
 // register user 
 
@@ -20,9 +19,8 @@ exports.registerUser = catchAsyncErrors(async(req, res, next)=>{
         pic
     })
 
-    
-
     sendToken(user, 201, res)
+    
 
 })
 
@@ -49,6 +47,7 @@ exports.loginUser = catchAsyncErrors(async(req, res, next)=>{
     }
 
     sendToken(user, 200, res)
+    
 
 })
 
