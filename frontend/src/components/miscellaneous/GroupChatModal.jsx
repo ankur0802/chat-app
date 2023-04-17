@@ -1,6 +1,7 @@
 import { Box, Button, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import UserListItem from '../UserAvatar/UserListItem';
 
@@ -12,9 +13,12 @@ const GroupChatModal = ({children}) => {
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [chats, setChats] = useState(false);
   const toast = useToast();
 
-  const { user, chats, setChats } = ChatState();
+  const { user } = useSelector(
+    (state) => state.user
+  );
 
   const handleGroup = (userToAdd) => {
     if (selectedUsers.includes(userToAdd)) {
@@ -45,7 +49,7 @@ const GroupChatModal = ({children}) => {
         },
       };
       const { data } = await axios.get(`/api/user?search=${search}`, config);
-      console.log(data);
+      
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -76,7 +80,13 @@ const GroupChatModal = ({children}) => {
       return;
     }
 
+    let users = []
+      selectedUsers.map((user)=>users.push(user._id))
+     
+      console.log(users);
+
     try {
+      
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -87,6 +97,7 @@ const GroupChatModal = ({children}) => {
         {
           name: groupChatName,
           users: JSON.stringify(selectedUsers.map((u) => u._id)),
+          
         },
         config
       );

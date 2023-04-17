@@ -27,24 +27,27 @@ import ProfileModel from "./ProfileModel";
 import axios from 'axios'
 import Chatloading from "./Chatloading";
 import UserListItem from "../UserAvatar/UserListItem";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../actions/userActions";
 
-const user = {
-    name:"Ankur",
-    email:"ankur@gmail.com",
-    pic:"http://res.cloudinary.com/di4mo62zm/image/upload/v1681292108/tvbreq4xxxvfgmmpfgzf.jpg"
-
-}
 
 
 const SideDrawer = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const toast = useToast()
 
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [chats, setChats] = useState();
   const [loadingChat, setLoadingChat] = useState();
+
+  const { user } = useSelector(
+    (state) => state.user
+  );
+  
 
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -109,8 +112,6 @@ const SideDrawer = () => {
         isClosable:true,
         position:'top-left'
     })
-    
-      
     }
 
   }
@@ -118,7 +119,15 @@ const SideDrawer = () => {
 
   const logoutHandler = ()=>{
 
-    // logout using redux 
+    dispatch(logout())
+    localStorage.clear('token')
+    toast({
+      title:'Logout successfull',
+      status:'success',
+      duration:5000,
+      isClosable:true,
+      position:'top-left'
+  })
     navigate('/')
 
   }

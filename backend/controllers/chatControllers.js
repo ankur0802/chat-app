@@ -10,7 +10,7 @@ exports.accessChat = catchAsyncErrors(async(req, res, next)=>{
     if(!userId){
         
         return res.sendStatus(400).json({
-            message:'userId params not sent eith request'
+            message:'userId params not sent with request'
         });
     }
 
@@ -57,20 +57,29 @@ exports.accessChat = catchAsyncErrors(async(req, res, next)=>{
 
 // fetcg all chats for particular user 
 exports.fetchChats = catchAsyncErrors(async(req, res, next)=>{
-
-    Chat.find({users: {$elemMatch: { $eq: req.user._id}}})
-       .populate('users', '-password')
-       .populate('groupAdmin', '-password')
-       .populate('users', '-password')
-       .populate('latestMessage')
-       .sort({updatedAt: -1})
-       .then(async(results)=>{
-        results = await User.populate(results, {
-            path: "latestMessage.sender",
-            select: "name, pic, email"
+    try{
+        Chat.find({users: {$elemMatch: { $eq: req.user._id}}})
+        .populate('users', '-password')
+        .populate('groupAdmin', '-password')
+        .populate('users', '-password')
+        .populate('latestMessage')
+        .sort({updatedAt: -1})
+        .then(async(results)=>{
+         results = await User.populate(results, {
+             path: "latestMessage.sender",
+             select: "name, pic, email"
+         })
+         res.status(200).send(results)
+         
         })
-        res.status(200).send(results)
-       })
+       
+
+    }catch(error){
+        return next( new Errorhandler(error.message, 400)) 
+    }
+
+  
+      
 
 })
 

@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 import chatSlice from './slices/chatSlice';
+import allchatSlice from './slices/mychatsSlice';
 import userSlice from './slices/userSlice';
 
 const store = configureStore({
@@ -7,6 +8,7 @@ const store = configureStore({
  
         user:userSlice.reducer,
         chats:chatSlice.reducer,
+        allChats:allchatSlice.reducer,
  
     }
 })

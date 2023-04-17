@@ -37,3 +37,21 @@ process.on('unhandledRejection', (err)=>{
         process.exit(1)
     })
 })
+
+const io = require('socket.io')(server,{
+    pingTimeout: 60000,
+    cors: {
+        origin: 'http://localhost:3000',
+    }
+})
+
+io.on('connection', (socket)=>{
+    console.log('connected to socket.io');
+
+    socket.on('setup', (userData)=>{
+        socket.join(userData._id);
+        console.log(userData._id);
+        socket.emit('connected');
+    })
+
+})

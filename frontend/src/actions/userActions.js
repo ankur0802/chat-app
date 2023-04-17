@@ -1,5 +1,6 @@
-import { loginFail, loginRequest, loginSuccess, clearErrors, registerUserFail, registerUserRequest, registerUserSuccess, logoutFail, logoutSuccess } from '../store/slices/userSlice'
+import { loginFail, loginRequest, loginSuccess, clearErrors, registerUserFail, registerUserRequest, registerUserSuccess, logoutFail, logoutSuccess, loadUserFail, loadUserRequest, loadUserSuccess } from '../store/slices/userSlice'
 import axios from 'axios'
+
 
 // LOGIN 
 export const login = (email, password) => async (dispatch) =>{
@@ -10,11 +11,9 @@ export const login = (email, password) => async (dispatch) =>{
         const config = {headers: {'Content-Type': 'application/json'}}
 
         const {data} = await axios.post(`/api/user/login`, {email, password}, config)
- 
+
         dispatch(loginSuccess(data))
-        
-
-
+    
     } catch (error) {
         dispatch(loginFail(error.response.data.message))
         
@@ -61,4 +60,23 @@ export const logout = () => async (dispatch) =>{
 // Clearing Errors 
 export const clearError = ()=> async(dispatch)=>{
     dispatch(clearErrors());
+}
+
+
+// load user 
+export const loadUser = () => async (dispatch) =>{
+    try {
+        
+        dispatch(loadUserRequest())
+
+        const {data} = await axios.get(`/api/user/me`)
+        
+
+        dispatch(loadUserSuccess(data.user))
+        
+
+    } catch (error) {
+        dispatch(loadUserFail(error.response.data.message))
+ 
+    }
 }

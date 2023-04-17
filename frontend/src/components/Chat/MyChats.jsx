@@ -3,26 +3,28 @@ import { Box, Button, Stack, Text, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import { getSender } from '../../config/ChatLogics'
 import Chatloading from '../miscellaneous/Chatloading'
 import GroupChatModal from '../miscellaneous/GroupChatModal'
 
-const MyChats = ({fetchAgain}) => {
+const MyChats = () => {
 
-  const [loggedUser, setLoggedUser] = useState()
+  
+  const [selectedChat, setSelectedChat] = useState()
+  
+
+  const { allChats } = useSelector(
+    (state) => state.allChats
+  );
+  console.log(allChats);
+  const { user} = useSelector(
+    (state) => state.user
+  );
+
 
   const toast = useToast()
 
-  const fetchChats = async()=>{
-
-    try {
-      
-      const config = {headers: {'Content-Type': 'multipart/form-data'}}
-
-      const {data} = await axios.get('/api/chats', config)
-      setChats(data)
-
-    } catch (error) {
 
       toast({
         title:'Error occured',
@@ -33,18 +35,18 @@ const MyChats = ({fetchAgain}) => {
         position:'top-left'
     })
       
-    }
+   
 
-  }
+  
   useEffect(()=>{
-    setLoggedUser('here')
-    fetchChats()
-  },[fetchAgain])
+   
+    
+  },[])
 
   return (
     <>
 <Box
-      d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+      d={{ base: allChats ? "none" : "flex", md: "flex" }}
       flexDir="column"
       alignItems="center"
       p={3}
@@ -84,9 +86,9 @@ const MyChats = ({fetchAgain}) => {
         borderRadius="lg"
         overflowY="hidden"
       >
-        {chats ? (
+        {allChats ? (
           <Stack overflowY="scroll">
-            {chats.map((chat) => (
+            {allChats.map((chat) => (
               <Box
                 onClick={() => setSelectedChat(chat)}
                 cursor="pointer"
@@ -98,9 +100,9 @@ const MyChats = ({fetchAgain}) => {
                 key={chat._id}
               >
                 <Text>
-                  {!chat.isGroupChat
-                    ? getSender(loggedUser, chat.users)
-                    : chat.chatName}
+                  {/* {!chat.isGroupChat
+                    ? getSender(user, chat.users)
+                    : chat.chatName} */}
                 </Text>
                 {chat.latestMessage && (
                   <Text fontSize="xs">

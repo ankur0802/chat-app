@@ -1,14 +1,18 @@
 import { Box } from "@chakra-ui/layout";
 import "./styles.css";
 import SingleChat from "./SingleChat";
-import { ChatState } from "../Context/ChatProvider";
+import { useSelector } from "react-redux";
+
 
 const Chatbox = ({ fetchAgain, setFetchAgain }) => {
-  const { selectedChat } = ChatState();
+
+  const { allChats } = useSelector(
+    (state) => state.allChats
+  );
 
   return (
     <Box
-      d={{ base: selectedChat ? "flex" : "none", md: "flex" }}
+      d={{ base: allChats ? "flex" : "none", md: "flex" }}
       alignItems="center"
       flexDir="column"
       p={3}

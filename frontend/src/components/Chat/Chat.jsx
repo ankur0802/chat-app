@@ -1,17 +1,37 @@
 import { Box } from '@chakra-ui/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 import SideDrawer from '../miscellaneous/SideDrawer'
 import ChatBox from './ChatBox'
 import MyChats from './MyChats'
+import { allChatss } from '../../actions/chatActions'
 
 const Chat = () => {
 
-  const user = {
-    name:"Ankur",
-    email:"ankur@gmail.com",
-    pic:"http://res.cloudinary.com/di4mo62zm/image/upload/v1681292108/tvbreq4xxxvfgmmpfgzf.jpg"
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-}
+
+  const { user } = useSelector(
+    (state) => state.user
+  );
+
+
+
+  const { chats, allChats } = useSelector(
+    (state) => state.allChats
+  );
+
+  
+
+  useEffect(() => {
+    if(user){
+      dispatch(allChatss(user._id))
+    }
+  
+  }, [ user, navigate,dispatch])
+  
 
 const [fetchAgain, setFetchAgain] = useState(false)
   
@@ -21,7 +41,7 @@ const [fetchAgain, setFetchAgain] = useState(false)
 
       <Box display='flex' justifyContent='space-between' w='100%' h='91.5vh' p='10px'>
         {user && <MyChats fetchAgain={fetchAgain}/>}
-        {user && <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>}
+        {/* {user && <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain}/>} */}
       </Box>
 
     </div>

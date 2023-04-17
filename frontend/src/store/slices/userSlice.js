@@ -48,6 +48,21 @@ const userSlice = createSlice({
       state.user = null;
       state.error = action.payload;
     },
+    loadUserRequest(state,action){
+      state.Loading = true;
+      state.isAuthenticated = false;
+  },
+  loadUserSuccess(state,action){
+      state.Loading = false;
+    state.user = action.payload;
+    state.isAuthenticated = true;
+  },
+  loadUserFail(state,action){
+      state.Loading = false;
+    state.isAuthenticated = false;
+    state.user = null;
+    state.error = action.payload;
+  },
   
     logoutSuccess(state,action){
       state.Loading = false;
@@ -62,7 +77,7 @@ const userSlice = createSlice({
      
   },
 });
-export const { loginRequest, loginSuccess, loginFail, clearErrors, registerUserFail, registerUserRequest, registerUserSuccess , logoutFail, logoutSuccess } =
+export const { loginRequest, loginSuccess, loginFail, clearErrors, registerUserFail, registerUserRequest, registerUserSuccess , logoutFail, logoutSuccess, loadUserFail, loadUserRequest, loadUserSuccess } =
 userSlice.actions;
 
 export default userSlice;

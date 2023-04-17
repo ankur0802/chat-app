@@ -8,18 +8,34 @@ const chatSlice = createSlice({
   name: "chats",
   initialState,
   reducers: {
-    chatRequest(state, action) {
+    allchatRequest(state, action) {
       
       state.Loading = true;
      
     },
-    chatSuccess(state, action) {
+    allchatSuccess(state, action) {
       state.Loading = false;
       state.chats = action.payload;
   
      
     },
-    chatFail(state, action) {
+    allchatFail(state, action) {
+      state.Loading = false;
+      state.chats = null;
+      state.error = action.payload;
+    },
+    groupRequest(state, action) {
+      
+      state.Loading = true;
+     
+    },
+    groupSuccess(state, action) {
+      state.Loading = false;
+      state.chats = action.payload;
+  
+     
+    },
+    groupFail(state, action) {
       state.Loading = false;
       state.chats = null;
       state.error = action.payload;
@@ -60,7 +76,7 @@ const chatSlice = createSlice({
      
   },
 });
-export const { chatRequest, chatSuccess, chatFail, clearErrors, selectedChatFail, selectedChatRequest, selectedChatSuccess, notificatioFail, notificationRequest, notificationSuccess} =
+export const { allchatFail, allchatRequest, allchatSuccess, clearErrors, selectedChatFail, selectedChatRequest, selectedChatSuccess, notificatioFail, notificationRequest, notificationSuccess , groupFail, groupRequest, groupSuccess } =
 chatSlice.actions;
 
 export default chatSlice;

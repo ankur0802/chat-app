@@ -24,10 +24,12 @@ app.use(fileUpload())
 // routes import 
 const userRoutes = require('./backend/routes/userRoutes');
 const chatRoutes = require('./backend/routes/chatRoutes');
+const messageRoutes = require('./backend/routes/messageRoutes');
 
 
 app.use('/api/user', userRoutes)
 app.use('/api/chat', chatRoutes)
+app.use('/api/messages', messageRoutes)
 
 
 // middleware for Error 
