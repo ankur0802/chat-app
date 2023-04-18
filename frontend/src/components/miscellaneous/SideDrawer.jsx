@@ -29,6 +29,7 @@ import Chatloading from "./Chatloading";
 import UserListItem from "../UserAvatar/UserListItem";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../actions/userActions";
+import { oneChat } from "../../actions/chatActions";
 
 
 
@@ -92,13 +93,8 @@ const SideDrawer = () => {
     try {
       setLoadingChat(true)
 
-      const config = {headers: {'Content-Type': 'application/json'}}
+      dispatch(oneChat(userId))
 
-      const {data} = await axios.post('/api/chat', {userId}, config)
-
-      if(!chats.find((c)=>c._id === data._id)) setChats([data, ...chats])
-
-      // setSelecterChat(data); --> this is in context api
       setLoadingChat(false)
       onClose()
       

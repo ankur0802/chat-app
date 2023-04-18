@@ -22,7 +22,7 @@ import { useSelector } from "react-redux";
 import UserBadgeItem from "../UserAvatar/UserBadgeItem";
 import UserListItem from "../UserAvatar/UserListItem";
 
-const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
+const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain ,selectedChat, setSelectedChat }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [groupChatName, setGroupChatName] = useState();
   const [search, setSearch] = useState("");
@@ -34,7 +34,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
   const {user} = useSelector((state)=>state.user)
   const {chat} = useSelector((state)=>state.chat)
 
-  const [selectedChat, setSelectedChat] = useState(chat)
+ 
 
   const handleSearch = async (query) => {
     setSearch(query);

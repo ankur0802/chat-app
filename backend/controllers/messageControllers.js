@@ -24,7 +24,7 @@ exports.sendMessage = catchAsyncErrors(async(req, res, next)=>{
     try {
       let message = await Message.create(newMessage);
   
-      message = await message.populate("sender", "name pic");
+      message = await message.populate("sender", "name pic email");
       message = await message.populate("chat");
       message = await User.populate(message, {
         path: "chat.users",
@@ -35,6 +35,7 @@ exports.sendMessage = catchAsyncErrors(async(req, res, next)=>{
       
   
       res.json(message);
+
 
     } catch (error) {
       

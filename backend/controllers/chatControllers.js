@@ -57,6 +57,7 @@ exports.accessChat = catchAsyncErrors(async(req, res, next)=>{
 
 // fetcg all chats for particular user 
 exports.fetchChats = catchAsyncErrors(async(req, res, next)=>{
+
     try{
         Chat.find({users: {$elemMatch: { $eq: req.user._id}}})
         .populate('users', '-password')
@@ -67,7 +68,7 @@ exports.fetchChats = catchAsyncErrors(async(req, res, next)=>{
         .then(async(results)=>{
          results = await User.populate(results, {
              path: "latestMessage.sender",
-             select: "name, pic, email"
+             select: "name pic email"
          })
          res.status(200).send(results)
          

@@ -4,15 +4,24 @@ import SingleChat from "./SingleChat";
 import { useSelector } from "react-redux";
 
 
-const Chatbox = ({ fetchAgain, setFetchAgain }) => {
+
+const Chatbox = () => {
+
+ 
 
   const { allChats } = useSelector(
     (state) => state.allChats
   );
 
+  const { selectedChat } = useSelector(
+    (state) => state.selectedChat
+  );
+
+  
+
   return (
     <Box
-      d={{ base: allChats ? "flex" : "none", md: "flex" }}
+      d={{ base: selectedChat ? "flex" : "none", md: "flex" }}
       alignItems="center"
       flexDir="column"
       p={3}
@@ -21,7 +30,7 @@ const Chatbox = ({ fetchAgain, setFetchAgain }) => {
       borderRadius="lg"
       borderWidth="1px"
     >
-      <SingleChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+      <SingleChat />
     </Box>
   );
 };

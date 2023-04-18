@@ -1,9 +1,10 @@
 
 exports.getSender = (loggedUser, users)=>{
 
-    return users[0]._id === loggedUser._id ? users[1].name : users[0].name
+    return (users[0]._id === loggedUser._id ? users[1].name : users[0].name)
 
 }
+
 
 exports.getSenderFull = (loggedUser, users)=>{
 
@@ -40,6 +41,7 @@ exports.isSameSenderMargin = (messages, m, i, userId) => {
   };
   
   exports.isLastMessage = (messages, i, userId) => {
+   console.log(messages);
     return (
       i === messages.length - 1 &&
       messages[messages.length - 1].sender._id !== userId &&

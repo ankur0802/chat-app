@@ -3,50 +3,35 @@ import { Box, Button, Stack, Text, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectChat } from '../../actions/chatActions'
 import { getSender } from '../../config/ChatLogics'
 import Chatloading from '../miscellaneous/Chatloading'
 import GroupChatModal from '../miscellaneous/GroupChatModal'
 
 const MyChats = () => {
+  const dispatch = useDispatch();
 
-  
   const [selectedChat, setSelectedChat] = useState()
   
+
+  dispatch(selectChat(selectedChat))
 
   const { allChats } = useSelector(
     (state) => state.allChats
   );
-  console.log(allChats);
+
   const { user} = useSelector(
     (state) => state.user
   );
 
+ 
 
-  const toast = useToast()
-
-
-      toast({
-        title:'Error occured',
-        description:'failed to load Chats',
-        status:'error',
-        duration:5000,
-        isClosable:true,
-        position:'top-left'
-    })
-      
-   
-
-  
-  useEffect(()=>{
-   
-    
-  },[])
 
   return (
     <>
 <Box
-      d={{ base: allChats ? "none" : "flex", md: "flex" }}
+      d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
       alignItems="center"
       p={3}
@@ -100,9 +85,10 @@ const MyChats = () => {
                 key={chat._id}
               >
                 <Text>
-                  {/* {!chat.isGroupChat
+                  
+                  {!chat.isGroupChat
                     ? getSender(user, chat.users)
-                    : chat.chatName} */}
+                    : chat.chatName}
                 </Text>
                 {chat.latestMessage && (
                   <Text fontSize="xs">

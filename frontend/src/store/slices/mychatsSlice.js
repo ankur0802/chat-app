@@ -24,6 +24,22 @@ const allchatSlice = createSlice({
       state.allChats = null;
       state.error = action.payload;
     },
+    groupchatRequest(state, action) {
+      
+      state.Loading = true;
+     
+    },
+    groupchatSuccess(state, action) {
+      state.Loading = false;
+      state.allChats = [...state, action.payload] ;
+  
+     
+    },
+    groupchatFail(state, action) {
+      state.Loading = false;
+      state.allChats = null;
+      state.error = action.payload;
+    },
     clearErrors(state,action){
         state.error=null;
     },
@@ -32,7 +48,7 @@ const allchatSlice = createSlice({
      
   },
 });
-export const { allchatFail, allchatRequest, allchatSuccess, clearErrors} =
+export const { allchatFail, allchatRequest, allchatSuccess, clearErrors, groupchatFail, groupchatRequest, groupchatSuccess} =
 allchatSlice.actions;
 
 export default allchatSlice;
