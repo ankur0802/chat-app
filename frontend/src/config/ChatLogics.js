@@ -32,6 +32,7 @@ exports.isSameSenderMargin = (messages, m, i, userId) => {
   };
   
   exports.isSameSender = (messages, m, i, userId) => {
+   
     return (
       i < messages.length - 1 &&
       (messages[i + 1].sender._id !== m.sender._id ||
@@ -41,7 +42,7 @@ exports.isSameSenderMargin = (messages, m, i, userId) => {
   };
   
   exports.isLastMessage = (messages, i, userId) => {
-   console.log(messages);
+  
     return (
       i === messages.length - 1 &&
       messages[messages.length - 1].sender._id !== userId &&

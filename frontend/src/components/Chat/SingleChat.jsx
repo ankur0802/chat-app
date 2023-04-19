@@ -5,7 +5,6 @@ import "./styles.css";
 import { IconButton, Spinner, useToast } from "@chakra-ui/react";
 import { getSender, getSenderFull } from "../../config/ChatLogics";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import ProfileModal from "../miscellaneous/ProfileModel";
 import ScrollableChat from "./ScrollableChat";
@@ -14,16 +13,17 @@ import animationData from "../../animations/typing.json";
 
 import io from "socket.io-client";
 import UpdateGroupChatModal from "../miscellaneous/UpdateGroupChatModal";
-import { useSelector, useDispatch} from "react-redux";
-import {  getallmessages, sendmsg} from '../../actions/messageActions'
-
-
+import { useSelector, useDispatch } from "react-redux";
+import { getallmessages } from "../../actions/messageActions";
+import axios from "axios";
+import { notifi } from "../../actions/notificationAction";
+import { selectChatReset } from "../../store/slices/selectedChatslice";
+import { useNavigate } from 'react-router-dom';
 
 const ENDPOINT = "http://localhost:4000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
 var socket, selectedChatCompare;
 
 const SingleChat = () => {
-
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
@@ -32,79 +32,58 @@ const SingleChat = () => {
   const [istyping, setIsTyping] = useState(false);
   const toast = useToast();
 
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
- 
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    const {user} = useSelector((state)=>state.user)
-    const {selectedChat} = useSelector((state)=>state.selectedChat)
 
-    const {allmessages} = useSelector((state)=>state.allmessages)
+  // dispatch(notifi(notification))
 
+  const { user } = useSelector((state) => state.user);
+  const { selectedChat } = useSelector((state) => state.selectedChat);
+
+  const { allmessages } = useSelector((state) => state.allmessages);
+  const { notification } = useSelector((state) => state.notification);
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
 
-    try {
-  
-  setMessages(allmessages)
+    await setMessages(allmessages);
 
-      setLoading(false);
+    setLoading(false);
 
-      socket.emit("join selectedChat", selectedChat._id);
-    } catch (error) {
-      toast({
-        title: "Error Occured!",
-        description: "Failed to Load the Messages",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-    }
+    socket.emit("join chat", selectedChat._id);
   };
 
-  useEffect(()=>{
-
-    if(selectedChat){
+  useEffect(() => {
+    if (selectedChat) {
       const chatId = selectedChat._id;
-    
-      dispatch(getallmessages(chatId))
 
+      dispatch(getallmessages(chatId));
     }
-
-  },[selectedChat, dispatch])
-
-  
-  const {sendedmsg} = useSelector((state)=>state.sentmsg)
-  
-
-  
+  }, [selectedChat, dispatch]);
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
       socket.emit("stop typing", selectedChat._id);
       try {
-
         const myForm = new FormData();
 
-        myForm.append('content', newMessage)
-        myForm.append('chatId', selectedChat._id)
-       
+        myForm.append("content", newMessage);
+        myForm.append("chatId", selectedChat._id);
+
+        const config = { headers: { "Content-Type": "application/json" } };
+        setLoading(true);
+
+        const { data } = await axios.post(`/api/messages`, myForm, config);
 
         setNewMessage("");
 
-        dispatch(sendmsg(myForm))
-       
-        socket.emit("new message", sendedmsg.content);
-        setMessages([...messages, sendedmsg]);
+        setMessages([...messages, data]);
+
+        setLoading(false);
+
+        socket.emit("new message", data);
       } catch (error) {
         toast({
           title: "Error Occured!",
@@ -130,21 +109,23 @@ const SingleChat = () => {
 
   useEffect(() => {
     fetchMessages();
-
     selectedChatCompare = selectedChat;
     // eslint-disable-next-line
-  }, [selectedChat]);
+  }, [selectedChat, allmessages]);
 
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
+       
+    
       if (
         !selectedChatCompare || // if selectedChat is not selected or doesn't match current selectedChat
-        selectedChatCompare._id !== newMessageRecieved.selectedChat._id
+        selectedChatCompare._id !== newMessageRecieved.chat._id
       ) {
-        // if (!notification.includes(newMessageRecieved)) {
-        //   setNotification([newMessageRecieved, ...notification]);
-        //   setFetchAgain(!fetchAgain);
-        // }
+        if (!notification.includes(newMessageRecieved)) {
+          dispatch(notifi([newMessageRecieved, ...notification]))
+          // setNotification([newMessageRecieved, ...notific]);
+          // setFetchAgain(!fetchAgain);
+        }
       } else {
         setMessages([...messages, newMessageRecieved]);
       }
@@ -189,25 +170,23 @@ const SingleChat = () => {
             <IconButton
               display={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon />}
-              // onClick={() => setSelectedChat("")}
+              onClick={() => {
+                dispatch(selectChatReset())
+                navigate('/')
+              }}
             />
             {messages &&
               (!selectedChat.isGroupChat ? (
                 <>
-                
                   {getSender(user, selectedChat.users)}
                   <ProfileModal
                     user={getSenderFull(user, selectedChat.users)}
-                  /> 
+                  />
                 </>
               ) : (
                 <>
-               
-                  {selectedChat.selectedChatName.toUpperCase()}
-                  <UpdateGroupChatModal
-                    fetchMessages={fetchMessages}
-                   
-                  />
+                  {selectedChat.chatName.toUpperCase()}
+                  <UpdateGroupChatModal fetchMessages={fetchMessages} />
                 </>
               ))}
           </Text>
@@ -229,6 +208,7 @@ const SingleChat = () => {
                 h={20}
                 alignSelf="center"
                 margin="auto"
+                
               />
             ) : (
               <div className="messages">
@@ -242,14 +222,13 @@ const SingleChat = () => {
               isRequired
               mt={3}
             >
-              {istyping ? (
+               {istyping ? (
                 <div>
-                  <Lottie
-                    options={defaultOptions}
-                    // height={50}
-                    width={70}
-                    style={{ marginBottom: 15, marginLeft: 0 }}
-                  />
+                   <Lottie
+                    animationData={animationData} 
+                     
+                    style={{ marginBottom: 15, marginLeft: 0, width:70}}
+                   />
                 </div>
               ) : (
                 <></>
@@ -266,7 +245,12 @@ const SingleChat = () => {
         </>
       ) : (
         // to get socket.io on same page
-        <Box display="flex" alignItems="center" justifyContent="center" h="100%">
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          h="100%"
+        >
           <Text fontSize="3xl" pb={3} fontFamily="Work sans">
             Click on a user to start Chatting
           </Text>

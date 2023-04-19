@@ -19,11 +19,16 @@ const selectedChatSlice = createSlice({
       state.selectedChat = null;
       state.error = action.payload;
     },
+    selectChatReset(state,action){
+
+      state.selectedChat = null;
+      
+    },
    
      
   },
 });
-export const { selectChatFail, selectChatSuccess } =
+export const { selectChatFail, selectChatSuccess, selectChatReset } =
 selectedChatSlice.actions;
 
 export default selectedChatSlice;

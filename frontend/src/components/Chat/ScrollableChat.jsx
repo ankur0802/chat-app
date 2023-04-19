@@ -14,6 +14,8 @@ const ScrollableChat = ({ messages }) => {
     const { user} = useSelector(
         (state) => state.user
       );
+      // console.log(user);
+      // console.log(messages);
 
   return (
     <ScrollableFeed>

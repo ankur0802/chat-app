@@ -1,10 +1,11 @@
 import { Box, Button, FormControl, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { groupChat } from '../../actions/chatActions';
 import UserBadgeItem from '../UserAvatar/UserBadgeItem';
 import UserListItem from '../UserAvatar/UserListItem';
+import Chatloading from './Chatloading';
 
 const GroupChatModal = ({children}) => {
 
@@ -17,12 +18,8 @@ const GroupChatModal = ({children}) => {
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [chats, setChats] = useState(false);
   const toast = useToast();
 
-  const { user } = useSelector(
-    (state) => state.user
-  );
 
   const handleGroup = (userToAdd) => {
     if (selectedUsers.includes(userToAdd)) {
@@ -46,13 +43,9 @@ const GroupChatModal = ({children}) => {
     }
 
     try {
-      setLoading(true);
-      const config = {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      };
+      const config = {headers: {'Content-Type': 'multipart/form-data'}}
       const { data } = await axios.get(`/api/user?search=${search}`, config);
+                     
       
       setLoading(false);
       setSearchResult(data);
@@ -125,13 +118,13 @@ const GroupChatModal = ({children}) => {
         <ModalHeader
           fontSize="35px"
           fontFamily="Work sans"
-          d="flex"
+          display="flex"
           justifyContent="center"
         >
           Create Group Chat
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody d="flex" flexDir="column" alignItems="center">
+        <ModalBody display="flex" flexDir="column" alignItems="center">
           <FormControl>
             <Input
               placeholder="Chat Name"
@@ -146,7 +139,7 @@ const GroupChatModal = ({children}) => {
               onChange={(e) => handleSearch(e.target.value)}
             />
           </FormControl>
-          <Box w="100%" d="flex" flexWrap="wrap">
+          <Box w="100%" display="flex" flexWrap="wrap">
             {selectedUsers.map((u) => (
               <UserBadgeItem
                 key={u._id}
@@ -156,8 +149,8 @@ const GroupChatModal = ({children}) => {
             ))}
           </Box>
           {loading ? (
-            // <ChatLoading />
-            <div>Loading...</div>
+            <Chatloading />
+            // <div>Loading...</div>
           ) : (
             searchResult
               ?.slice(0, 4)

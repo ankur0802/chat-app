@@ -1,8 +1,6 @@
 import { AddIcon } from '@chakra-ui/icons'
-import { Box, Button, Stack, Text, useToast } from '@chakra-ui/react'
-import axios from 'axios'
+import { Box, Button, Stack, Text } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectChat } from '../../actions/chatActions'
 import { getSender } from '../../config/ChatLogics'
@@ -31,7 +29,7 @@ const MyChats = () => {
   return (
     <>
 <Box
-      d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+      display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
       alignItems="center"
       p={3}
@@ -45,7 +43,7 @@ const MyChats = () => {
         px={3}
         fontSize={{ base: "28px", md: "30px" }}
         fontFamily="Work sans"
-        d="flex"
+        display="flex"
         w="100%"
         justifyContent="space-between"
         alignItems="center"
@@ -53,7 +51,7 @@ const MyChats = () => {
         My Chats
         <GroupChatModal>
           <Button
-            d="flex"
+            display="flex"
             fontSize={{ base: "17px", md: "10px", lg: "17px" }}
             rightIcon={<AddIcon />}
           >
@@ -62,7 +60,7 @@ const MyChats = () => {
         </GroupChatModal>
       </Box>
       <Box
-        d="flex"
+        display="flex"
         flexDir="column"
         p={3}
         bg="#F8F8F8"
